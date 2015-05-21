@@ -23,7 +23,7 @@
 
                 // Percolate up
             int hole = ++currentSize;
-            for( ; hole > 1 && x < array[ hole / 2 ]; hole /= 2 )
+            for( ; hole > 1 && x.freqSum < array[ hole / 2 ].freqSum; hole /= 2 )
                 array[ hole ] = array[ hole / 2 ];
             array[ hole ] = x;
         }
@@ -122,9 +122,9 @@
 /* 3*/      for( ; hole * 2 <= currentSize; hole = child )
             {
 /* 4*/          child = hole * 2;
-/* 5*/          if( child != currentSize && array[ child + 1 ] < array[ child ] )
+/* 5*/          if( child != currentSize && array[ child + 1 ].freqSum < array[ child ].freqSum )
 /* 6*/              child++;
-/* 7*/          if( array[ child ] < tmp )
+/* 7*/          if( array[ child ].freqSum < tmp.freqSum )
 /* 8*/              array[ hole ] = array[ child ];
                 else
 /* 9*/              break;
