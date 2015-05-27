@@ -46,7 +46,7 @@ int main(int argc, char** argv)
 
   for(i = 0; i < filestatus.st_size && message[i] == decodedMessage[i]; i++);
   
-  
+ // cout << "Size of File " << filestatus.st_size << endl; 
   if(i == filestatus.st_size && decodedSize == filestatus.st_size)
     cout << " OK\n";
   else

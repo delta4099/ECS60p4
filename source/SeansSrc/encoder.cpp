@@ -14,6 +14,25 @@ Encoder::~Encoder()
 {
 } // ~Encoder()
 
+void const printTrie(const BinaryNode& x)
+{
+  //cout << "begin" << endl;
+ // cout << "TEST value  " << x.letter << " Test freqSum "  << x.count << endl; 
+  //cout << "TEST temp left and right freqSum Left: " << x.left->freqSum << " Right: " << x.right->freqSum << endl; 
+
+  if (x.left)
+  {
+  //  cout << "TESTing left " << x.left->freqSum; 
+    printTrie(*(x.left));
+  }
+  if (x.right)
+  {
+  
+    //cout << "Testing right "  << x.right->freqSum; 
+    printTrie(*(x.right)); 
+  }
+}
+
 
 void Encoder::createTree(const unsigned char *message, const int size)
 {
@@ -23,6 +42,12 @@ void Encoder::createTree(const unsigned char *message, const int size)
   
   for(int i = 0; i < size; i++)
     counts[message[i]]++;
+  
+  // for (int i = 0; i < 256; i++)
+  //   {
+  //       if (counts[i])
+  //         cout <<  "The char "  << (int) i << "  Test Freq"  << counts[i] << endl; 
+  //   }
   
   heap.currentSize = 0;
   
@@ -40,6 +65,8 @@ void Encoder::createTree(const unsigned char *message, const int size)
   }
   
   root = heap.array[1];
+  
+ // printTrie(*root); 
   Encoding encoding(0, 0);
   traverse(root, encoding, 0);
 /*  

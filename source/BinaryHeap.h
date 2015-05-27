@@ -23,6 +23,8 @@
         class BinaryHeap
         {
           public:
+            int                currentSize;  // Number of elements in heap
+
             explicit BinaryHeap( int capacity = 100 );
 
             bool isEmpty( ) const;
@@ -35,7 +37,6 @@
             void makeEmpty( );
 
           private:
-            int                currentSize;  // Number of elements in heap
             vector<Comparable> array;        // The heap array
 
             void buildHeap( );

@@ -18,7 +18,7 @@ class Trie
 public:
   unsigned int code; 
   int depth; 
-  char value; 
+  int value; 
   int freqSum; 
   Trie * right; 
   Trie * left; 
@@ -29,12 +29,13 @@ public:
    depth = 0; 
   }
 
-  Trie( Trie * l,  Trie * r)
+  Trie( Trie * l,  Trie * r, int v = 300) : value(v)
+  //: value(300), freqSum(l->freqSum + r->freqSum)
   {
     left = l; 
     right = r; 
-   // cout << "TEST when construting left " << left->freqSum << " right "  << right->freqSum << endl; 
-    value = 0; 
+   //cout << "TEST when construting left " << left->freqSum << " right "  << right->freqSum << endl; 
+    //value = 300; 
     freqSum = l->freqSum + r->freqSum; 
   }
   
@@ -69,7 +70,7 @@ public:
 void const printTrie(const Trie& x)
 {
   //cout << "begin" << endl;
-  cout << "TEST value  " << x.value << " Test freqSum "  << x.freqSum << endl; 
+  cout << "TEST value  " << (int) x.value << " Test freqSum "  << x.freqSum << endl; 
   //cout << "TEST temp left and right freqSum Left: " << x.left->freqSum << " Right: " << x.right->freqSum << endl; 
 
   if (x.left)
@@ -90,7 +91,7 @@ void getCode(Trie t, unsigned int c, int d, unsigned int* codes, int *depths)
   t.code = c; 
   t.depth = d; 
   
-  if (t.value)
+  if (t.value < 280)
   {
      //c <<= (32 - d); 
      codes[(int) t.value] = c; 
@@ -140,6 +141,12 @@ void Encoder::encode(const unsigned char *message, const int size,
   unsigned char *encodedMessage, 
     int *encodedSize)
 {
+  /*
+  for (int i = 0; i < 30; i++)
+  {
+    cout << i << "  TEST Message " << (int) message[i] << endl; 
+   }
+   */
   unsigned char *encodedMessageTemp = new unsigned char[size]; 
   // cout << " TEST Array before "  << endl; 
   // for (int pos = 0; pos < 30; pos++)
@@ -156,11 +163,18 @@ void Encoder::encode(const unsigned char *message, const int size,
   
   // makes count array and records frequencies of letters in message
   int freq[256] = {}; 
+ // memset(freq, 0, sizeof(freq));
+ //memset(encodedMessage, 0, size + 1028);
+
+ //memset(encodedMessageTemp, 0, size + 1028);
+
+// int mempos = 0; 
+
   for (int i = 0; i < size; i++)
+  {
     freq[message[i]]++;
-  
-    memset(encodedMessageTemp, 0, size);
-   memcpy(encodedMessageTemp, freq, 1024); 
+  }
+   memcpy(&encodedMessageTemp[1], freq, 1024); 
 
 // for (int i = 0; i < 256; i++)
 //     {
@@ -177,9 +191,9 @@ void Encoder::encode(const unsigned char *message, const int size,
   //   }
   
   // inserts used letters into binary heap
-  int totalfreq = 0; 
+  //int totalfreq = 0; 
   int testSum = 0;
-  for (int i = 0; i < 256; i++)
+  for ( register int i = 0; i < 256; i++)
   {
     if ( freq[i] )
     {
@@ -191,7 +205,7 @@ void Encoder::encode(const unsigned char *message, const int size,
       Trie x = * (new Trie( (char)i, freq[i]) ); 
       heap.insert( x );
       testSum++;
-      totalfreq += freq[i]; 
+      //totalfreq += freq[i]; 
   
       // cout << "Totalfreq after = " << totalfreq << endl << endl << endl; 
 
@@ -202,14 +216,14 @@ void Encoder::encode(const unsigned char *message, const int size,
   Trie temp; 
   temp = heap.findMin();
   
-  while ( ! heap.isEmpty() )
+  while ( heap.currentSize > 1 )
   {
     Trie  l;
     Trie  r;  
     
     heap.deleteMin(l);
-    if (heap.isEmpty())
-      break;
+    //if (heap.isEmpty())
+      //break;
 
     heap.deleteMin(r); 
     
@@ -217,7 +231,7 @@ void Encoder::encode(const unsigned char *message, const int size,
     heap.insert( temp ); 
   }
 
-  //printTrie(temp); 
+ // printTrie(temp); 
   
   unsigned int codes[256] = {}; 
   int depths[256] = {}; 
@@ -278,7 +292,8 @@ void Encoder::encode(const unsigned char *message, const int size,
   // }
   
   // cout << endl << "Done" << endl; 
-  int encodedCount = 1024;
+ register int encodedCount = 1028;
+  //int encodedCount = 2044; 
   // put huffman code into encodedMessage
   
   
@@ -291,11 +306,14 @@ void Encoder::encode(const unsigned char *message, const int size,
   
   // cout << size << endl; 
   
-  for (int pos = 0; pos < size; pos++)
+  for (register int pos = 0; pos < size; pos++)
   {
    // workbench = 0;
    //cout << "TEST !!!!!" << message[pos] << endl; 
-    if(depths[message[pos]]) {
+   //cout << "TEST DEPTHS "  << depths[message[pos]]  << endl; 
+    if(freq[message[pos]]) {
+     // if (pos < 40 )
+       // cout << "TEST message " << (int) message[pos] << " Test code "  << codes[message[pos]] << endl; 
       workbench = workbench | (codes[message[pos]] << (32 - depths[message[pos]] - bitpos));
      // cout << "test workbench" << endl;
       /*
@@ -331,12 +349,16 @@ void Encoder::encode(const unsigned char *message, const int size,
     
   }
   
-  
+  //cout << bitpos << endl; 
+  encodedMessageTemp[0] = bitpos; 
+  //if (bitpos > 0)
+  //{
   unsigned int lastWB = workbench;
   lastWB = lastWB >> 24;
   encodedMessageTemp[encodedCount++] = (char)lastWB;
   workbench = workbench << 8;
   bitpos -= 8;
+  //=}
   
   /*
   cout << endl << endl; 
@@ -382,11 +404,19 @@ void Encoder::encode(const unsigned char *message, const int size,
   //       }
 
   //   }    
-  memcpy(encodedMessage, encodedMessageTemp, size);
-  *encodedSize = totalBits + 8*1025;
-  
-  cout << endl << endl << *encodedSize << endl << endl; 
+  memcpy(encodedMessage, encodedMessageTemp, size + 1028);
+  *encodedSize = encodedCount;
+  //cout << encodedCount << "TEST" << endl; 
+ // cout << endl << endl << *encodedSize << endl << endl; 
   heap.makeEmpty(); 
+  
+  // for (int i = 0; i < 300; i++)
+  //   {
+  //     cout << "TESTING encodedMessage "  << (int) encodedMessage[i] << endl; 
+  //   }
+  
+
+  //cout << endl << endl<< endl << "THE END" << endl << endl << endl; 
 }  // encode()
 
 

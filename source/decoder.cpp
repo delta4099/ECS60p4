@@ -4,7 +4,7 @@
 #include "BinaryHeap.h"
 #include "dsexceptions.h"
 #include <iostream>
-#include <string.h> 
+#include <cstring> 
 
 using namespace std;
 
@@ -106,8 +106,28 @@ Decoder::~Decoder()
 void Decoder::decode(const unsigned char* encodedMessage, const int encodedSize, 
   unsigned char* decodedMessage, int *decodedSize)
 {
+  //cout << sizeof(decodedMessage); 
+  unsigned char* encodedMessageTemp = new unsigned char[encodedSize]; 
+  memcpy(encodedMessageTemp, encodedMessage, encodedSize); 
+  //cout << "Encoder size "  << encodedSize << endl; 
+ // cout << "TESTing message "  << (int) encodedMessage[135235] << endl;
+ /*
+  for(int j = 0x80; j > 0; j >>= 1) 
+      if(encodedMessage[135234] & j)
+          cout << '1'; 
+      else
+          cout << '0';
+  */
+ register int endBitPos = encodedMessageTemp[0]; 
+  
+  //cout << "IN Decoder  " << endBitPos << endl;
+    // for (int i = 0; i < 300; i++)
+    // {
+    //   cout << "TESTING encodedMessage "  << (int) encodedMessage[i] << endl; 
+    // }
+    
       // int size = (sizeof(decodedMessage)/sizeof(decodedMessage[0]))/2;
-      int size = sizeof(encodedMessage); 
+    //  int size = sizeof(encodedMessage); 
     //  unsigned char *encodedMessageTemp = new unsigned char[size];
     //  memcpy(encodedMessageTemp, encodedMessage, size);
       
@@ -117,20 +137,21 @@ void Decoder::decode(const unsigned char* encodedMessage, const int encodedSize,
 //   {
 //      //cout << "**TEST** encodedMessageTemp[pos]: " << encodedMessageTemp[pos] << endl;
   
-//      for(int j = 0x80; j > 0; j >>= 1) 
-//       if(encodedMessageTemp[pos] & j)
-//          cout << '1'; 
-//       else
-//          cout << '0';
+      // for(int j = 0x80; j > 0; j >>= 1) 
+      // if(encodedMessageTemp[pos] & j)
+      //     cout << '1'; 
+      // else
+      //     cout << '0';
 //   }
    
    
 //   cout << "THE FREQ in Decoder " << endl; 
     int freq[256] = {};
-    memcpy(freq, encodedMessage, 1024); 
+    memcpy(freq, &encodedMessageTemp[1], 1024); 
     
-      int totalfreq = 0; 
+     // int totalfreq = 0; 
 
+  
     // for (int i = 0; i < 256; i++)
     // {
         // if (freq[i])
@@ -148,7 +169,7 @@ void Decoder::decode(const unsigned char* encodedMessage, const int encodedSize,
 
    BinaryHeap <Trie> heap(256);
    
-  for (int i = 0; i < 256; i++)
+  for ( register int i = 0; i < 256; i++)
   {
     if ( freq[i] )
     {
@@ -157,7 +178,7 @@ void Decoder::decode(const unsigned char* encodedMessage, const int encodedSize,
       // cout <<  "The char "  << (char) i << "  Test Freq"  << (int) freq[i] << endl; 
       Trie x = * (new Trie( (char)i, freq[i]) ); 
       heap.insert( x );
-      totalfreq += freq[i];
+      ////totalfreq += freq[i];
       // cout << "Totalfreq after = " << totalfreq << endl << endl << endl; 
 
     } 
@@ -171,14 +192,14 @@ void Decoder::decode(const unsigned char* encodedMessage, const int encodedSize,
   Trie temp; 
   temp = heap.findMin();
   
-  while ( ! heap.isEmpty() )
+  while ( heap.currentSize > 1 )
   {
     Trie  l;
     Trie  r;  
     
     heap.deleteMin(l);
-    if (heap.isEmpty())
-      break;
+    //if (heap.isEmpty())
+      //break;
 
     heap.deleteMin(r); 
     
@@ -195,7 +216,7 @@ void Decoder::decode(const unsigned char* encodedMessage, const int encodedSize,
     //reading message
   
   //message is encodedMessageTemp shifted 1024 bytes
-    int end = (encodedSize/8) + 1;
+  //  unsigned int end = (encodedSize/8) + 1;
 
   // temp is head
   // cout << endl << endl << endl << "Decoder"  << endl; 
@@ -208,34 +229,82 @@ void Decoder::decode(const unsigned char* encodedMessage, const int encodedSize,
   //       cout << '0';
   // }
   
-  cout << endl << endl; 
+  //cout << endl << endl; 
   //unsigned char *mes = new unsigned char[sizeof(decodedMessage)];
-  int posInMes = 0; 
+  register int posInMes = 0; 
   Trie look = temp;
-  
-  for (int pos = 1024; pos < end; pos++)
+ // unsigned decodePos = 0; 
+  //unsigned bitPos = 0; 
+
+  //int pos = 1024; 
+  /*
+   while(pos < 1978305)
   {
-    
-    for(int j = 0x80; j > 0; j >>= 1) 
+    look = temp;
+    while(look.left || look.right)
     {
-      if(encodedMessage[pos] & j)
+      if(encodedMessage[pos] & (0x80 >> bitPos))
+        look = *look.right;
+      else
+        look = *look.left;
+      
+      if(++bitPos == 8)
+      {
+        bitPos = 0;
+        pos++;
+      }  // if reached end of char
+    }  // while not at leaf
+    
+    
+  // cout << "Test "  << (int) look.value  << " Look freq " << look.freqSum << " Pos " << pos << endl; 
+
+    decodedMessage[decodePos++] = look.value;
+  }  // while not reached end of encoded message
+  */
+  // /*                               1144694
+  for ( register unsigned int pos = 1028; pos < encodedSize; pos++)
+  {
+    // look = temp;
+    register int tempEnd = endBitPos; 
+
+    for(unsigned int j = 0x80; j > 0; j >>= 1) 
+    {
+      if(encodedMessageTemp[pos] & j)
       {
         look = *look.right;
+        tempEnd--; 
        // cout << "Testing right" << look.freqSum << endl; 
       }
       else
       {
         look = *look.left;
+        tempEnd--; 
         //cout << "Testing left " << look.freqSum << endl; 
       } 
       if (!look.left && !look.right)
       {
-        cout << "Test"  << look.value << endl; 
+        register int tempSize = encodedSize;
+
+        
+        if (pos >= tempSize - 1 && tempEnd < 0)
+        {
+          //cout << "Break"  << endl; 
+          look = temp;
+          break; 
+        }  
+        // cout << "Test "  << (int) look.value  << "Pos " << pos << endl; 
         decodedMessage[posInMes++] = look.value;
         look = temp;
+        
+        //break; 
       }
     }
+   
+  // decodedMessage[posInMes++] = look.value;
+
   }
- *decodedSize = size; 
+//  */
+ //memcpy(decodedMessage, decodedMessageTemp, posInMes);
+ *decodedSize = posInMes; 
   
 } // decode()
