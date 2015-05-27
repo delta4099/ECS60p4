@@ -170,7 +170,7 @@ void Encoder::encode(const unsigned char *message, const int size,
 
 // int mempos = 0; 
 
-  for (int i = 0; i < size; i++)
+  for (register int i = 0; i < size; i++)
   {
     freq[message[i]]++;
   }
@@ -239,7 +239,7 @@ void Encoder::encode(const unsigned char *message, const int size,
   
   unsigned int totalDepths = 0; 
   // checks for correct code and depth
-  for (int pos = 0; pos < 256; pos++)
+  for (register int pos = 0; pos < 256; pos++)
   {
     if (depths[pos])
     {

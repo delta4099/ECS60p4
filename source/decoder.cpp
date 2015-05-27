@@ -267,7 +267,7 @@ void Decoder::decode(const unsigned char* encodedMessage, const int encodedSize,
     // look = temp;
     register int tempEnd = endBitPos; 
 
-    for(unsigned int j = 0x80; j > 0; j >>= 1) 
+    for(  unsigned int j = 0x80; j > 0; j >>= 1) 
     {
       if(encodedMessageTemp[pos] & j)
       {
