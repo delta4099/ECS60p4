@@ -6,6 +6,7 @@ class BinaryNode
 {
 public:
   int letter;
+  //int count; 
   BinaryNode *left;
   BinaryNode *right;
   int count;

@@ -192,7 +192,7 @@ void Encoder::encode(const unsigned char *message, const int size,
   
   // inserts used letters into binary heap
   //int totalfreq = 0; 
-  int testSum = 0;
+  //int testSum = 0;
   for ( register int i = 0; i < 256; i++)
   {
     if ( freq[i] )
@@ -201,16 +201,19 @@ void Encoder::encode(const unsigned char *message, const int size,
       // cout << "Totalfreq before = "  << totalfreq << endl;
       // cout <<  "The char "  << (char) i << "  Test Freq"  << freq[i] << endl; 
      //  totalfreq += (int)freq[i]; 
-
-      Trie x = * (new Trie( (char)i, freq[i]) ); 
-      heap.insert( x );
-      testSum++;
+      heap.array[++heap.currentSize] = * (new Trie( (char)i, freq[i]) );
+     // Trie x = * (new Trie( (char)i, freq[i]) ); 
+      //heap.insert( x );
+    //  testSum++;
       //totalfreq += freq[i]; 
   
       // cout << "Totalfreq after = " << totalfreq << endl << endl << endl; 
 
     } 
   }
+
+  heap.buildHeap();
+
 
   // reorders binary heap until only one Trie left
   Trie temp; 

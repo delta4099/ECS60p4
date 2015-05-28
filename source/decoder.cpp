@@ -168,7 +168,29 @@ void Decoder::decode(const unsigned char* encodedMessage, const int encodedSize,
     // }
 
    BinaryHeap <Trie> heap(256);
+  
+   for ( register int i = 0; i < 256; i++)
+  {
+    if ( freq[i] )
+    {
+      // cout << "Entering the loop i = " << i << endl; 
+      // cout << "Totalfreq before = "  << totalfreq << endl;
+      // cout <<  "The char "  << (char) i << "  Test Freq"  << freq[i] << endl; 
+     //  totalfreq += (int)freq[i]; 
+      heap.array[++heap.currentSize] = * (new Trie( (char)i, freq[i]) );
+     // Trie x = * (new Trie( (char)i, freq[i]) ); 
+      //heap.insert( x );
+    //  testSum++;
+      //totalfreq += freq[i]; 
+  
+      // cout << "Totalfreq after = " << totalfreq << endl << endl << endl; 
+
+    } 
+  }
+
+  heap.buildHeap();
    
+   /*
   for ( register int i = 0; i < 256; i++)
   {
     if ( freq[i] )
@@ -183,7 +205,7 @@ void Decoder::decode(const unsigned char* encodedMessage, const int encodedSize,
 
     } 
   }
-  
+  */
   // for (int i = 0; i < 256; i++)
   //   {
   //       if (freq[i])

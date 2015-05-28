@@ -1,0 +1,136 @@
+21c21
+<   int value; 
+---
+>   char value; 
+32,33c32
+<   Trie( Trie * l,  Trie * r, int v = 300) : value(v)
+<   //: value(300), freqSum(l->freqSum + r->freqSum)
+---
+>   Trie( Trie * l,  Trie * r)
+37,38c36,37
+<    //cout << "TEST when construting left " << left->freqSum << " right "  << right->freqSum << endl; 
+<     //value = 300; 
+---
+>    // cout << "TEST when construting left " << left->freqSum << " right "  << right->freqSum << endl; 
+>     value = 0; 
+73c72
+<   cout << "TEST value  " << (int) x.value << " Test freqSum "  << x.freqSum << endl; 
+---
+>   cout << "TEST value  " << x.value << " Test freqSum "  << x.freqSum << endl; 
+94c93
+<   if (t.value < 280)
+---
+>   if (t.value)
+144,149d142
+<   /*
+<   for (int i = 0; i < 30; i++)
+<   {
+<     cout << i << "  TEST Message " << (int) message[i] << endl; 
+<    }
+<    */
+166,174c159
+<  // memset(freq, 0, sizeof(freq));
+<  //memset(encodedMessage, 0, size + 1028);
+< 
+<  //memset(encodedMessageTemp, 0, size + 1028);
+< 
+< // int mempos = 0; 
+< 
+<   for (register int i = 0; i < size; i++)
+<   {
+---
+>   for (int i = 0; i < size; i++)
+176,177c161,163
+<   }
+<    memcpy(&encodedMessageTemp[1], freq, 1024); 
+---
+>   
+>     memset(encodedMessageTemp, 0, size);
+>    memcpy(encodedMessageTemp, freq, 1024); 
+194,196c180,182
+<   //int totalfreq = 0; 
+<   //int testSum = 0;
+<   for ( register int i = 0; i < 256; i++)
+---
+>   int totalfreq = 0; 
+>   int testSum = 0;
+>   for (int i = 0; i < 256; i++)
+204,208c190,194
+<       heap.array[++heap.currentSize] = * (new Trie( (char)i, freq[i]) );
+<      // Trie x = * (new Trie( (char)i, freq[i]) ); 
+<       //heap.insert( x );
+<     //  testSum++;
+<       //totalfreq += freq[i]; 
+---
+> 
+>       Trie x = * (new Trie( (char)i, freq[i]) ); 
+>       heap.insert( x );
+>       testSum++;
+>       totalfreq += freq[i]; 
+215,217d200
+<   heap.buildHeap();
+< 
+< 
+222c205
+<   while ( heap.currentSize > 1 )
+---
+>   while ( ! heap.isEmpty() )
+228,229c211,212
+<     //if (heap.isEmpty())
+<       //break;
+---
+>     if (heap.isEmpty())
+>       break;
+237c220
+<  // printTrie(temp); 
+---
+>   //printTrie(temp); 
+245c228
+<   for (register int pos = 0; pos < 256; pos++)
+---
+>   for (int pos = 0; pos < 256; pos++)
+298,299c281
+<  register int encodedCount = 1028;
+<   //int encodedCount = 2044; 
+---
+>   int encodedCount = 1024;
+312c294
+<   for (register int pos = 0; pos < size; pos++)
+---
+>   for (int pos = 0; pos < size; pos++)
+316,319c298
+<    //cout << "TEST DEPTHS "  << depths[message[pos]]  << endl; 
+<     if(freq[message[pos]]) {
+<      // if (pos < 40 )
+<        // cout << "TEST message " << (int) message[pos] << " Test code "  << codes[message[pos]] << endl; 
+---
+>     if(depths[message[pos]]) {
+355,358c334
+<   //cout << bitpos << endl; 
+<   encodedMessageTemp[0] = bitpos; 
+<   //if (bitpos > 0)
+<   //{
+---
+>   
+364d339
+<   //=}
+410,414c385,386
+<   memcpy(encodedMessage, encodedMessageTemp, size + 1028);
+<   *encodedSize = encodedCount;
+<   //cout << encodedCount << "TEST" << endl; 
+<  // cout << endl << endl << *encodedSize << endl << endl; 
+<   heap.makeEmpty(); 
+---
+>   memcpy(encodedMessage, encodedMessageTemp, size);
+>   *encodedSize = totalBits + 8*1025;
+416,422c388,389
+<   // for (int i = 0; i < 300; i++)
+<   //   {
+<   //     cout << "TESTING encodedMessage "  << (int) encodedMessage[i] << endl; 
+<   //   }
+<   
+< 
+<   //cout << endl << endl<< endl << "THE END" << endl << endl << endl; 
+---
+>   cout << endl << endl << *encodedSize << endl << endl; 
+>   heap.makeEmpty(); 

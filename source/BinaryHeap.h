@@ -36,7 +36,7 @@
             void deleteMin( Comparable & minItem );
             void makeEmpty( );
 
-          private:
+        //  private:
             vector<Comparable> array;        // The heap array
 
             void buildHeap( );

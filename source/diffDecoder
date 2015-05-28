@@ -1,0 +1,183 @@
+7c7
+< #include <cstring> 
+---
+> #include <string.h> 
+109,128d108
+<   //cout << sizeof(decodedMessage); 
+<   unsigned char* encodedMessageTemp = new unsigned char[encodedSize]; 
+<   memcpy(encodedMessageTemp, encodedMessage, encodedSize); 
+<   //cout << "Encoder size "  << encodedSize << endl; 
+<  // cout << "TESTing message "  << (int) encodedMessage[135235] << endl;
+<  /*
+<   for(int j = 0x80; j > 0; j >>= 1) 
+<       if(encodedMessage[135234] & j)
+<           cout << '1'; 
+<       else
+<           cout << '0';
+<   */
+<  register int endBitPos = encodedMessageTemp[0]; 
+<   
+<   //cout << "IN Decoder  " << endBitPos << endl;
+<     // for (int i = 0; i < 300; i++)
+<     // {
+<     //   cout << "TESTING encodedMessage "  << (int) encodedMessage[i] << endl; 
+<     // }
+<     
+130c110
+<     //  int size = sizeof(encodedMessage); 
+---
+>       int size = sizeof(encodedMessage); 
+140,144c120,124
+<       // for(int j = 0x80; j > 0; j >>= 1) 
+<       // if(encodedMessageTemp[pos] & j)
+<       //     cout << '1'; 
+<       // else
+<       //     cout << '0';
+---
+> //      for(int j = 0x80; j > 0; j >>= 1) 
+> //       if(encodedMessageTemp[pos] & j)
+> //          cout << '1'; 
+> //       else
+> //          cout << '0';
+150c130
+<     memcpy(freq, &encodedMessageTemp[1], 1024); 
+---
+>     memcpy(freq, encodedMessage, 1024); 
+152c132
+<      // int totalfreq = 0; 
+---
+>       int totalfreq = 0; 
+154d133
+<   
+171,191d149
+<   
+<    for ( register int i = 0; i < 256; i++)
+<   {
+<     if ( freq[i] )
+<     {
+<       // cout << "Entering the loop i = " << i << endl; 
+<       // cout << "Totalfreq before = "  << totalfreq << endl;
+<       // cout <<  "The char "  << (char) i << "  Test Freq"  << freq[i] << endl; 
+<      //  totalfreq += (int)freq[i]; 
+<       heap.array[++heap.currentSize] = * (new Trie( (char)i, freq[i]) );
+<      // Trie x = * (new Trie( (char)i, freq[i]) ); 
+<       //heap.insert( x );
+<     //  testSum++;
+<       //totalfreq += freq[i]; 
+<   
+<       // cout << "Totalfreq after = " << totalfreq << endl << endl << endl; 
+< 
+<     } 
+<   }
+< 
+<   heap.buildHeap();
+193,194c151
+<    /*
+<   for ( register int i = 0; i < 256; i++)
+---
+>   for (int i = 0; i < 256; i++)
+203c160
+<       ////totalfreq += freq[i];
+---
+>       totalfreq += freq[i];
+208c165
+<   */
+---
+>   
+217c174
+<   while ( heap.currentSize > 1 )
+---
+>   while ( ! heap.isEmpty() )
+223,224c180,181
+<     //if (heap.isEmpty())
+<       //break;
+---
+>     if (heap.isEmpty())
+>       break;
+241c198
+<   //  unsigned int end = (encodedSize/8) + 1;
+---
+>     int end = (encodedSize/8) + 1;
+254c211
+<   //cout << endl << endl; 
+---
+>   cout << endl << endl; 
+256c213
+<   register int posInMes = 0; 
+---
+>   int posInMes = 0; 
+258,263c215,216
+<  // unsigned decodePos = 0; 
+<   //unsigned bitPos = 0; 
+< 
+<   //int pos = 1024; 
+<   /*
+<    while(pos < 1978305)
+---
+>   
+>   for (int pos = 1024; pos < end; pos++)
+265,279d217
+<     look = temp;
+<     while(look.left || look.right)
+<     {
+<       if(encodedMessage[pos] & (0x80 >> bitPos))
+<         look = *look.right;
+<       else
+<         look = *look.left;
+<       
+<       if(++bitPos == 8)
+<       {
+<         bitPos = 0;
+<         pos++;
+<       }  // if reached end of char
+<     }  // while not at leaf
+<     
+281,292c219
+<   // cout << "Test "  << (int) look.value  << " Look freq " << look.freqSum << " Pos " << pos << endl; 
+< 
+<     decodedMessage[decodePos++] = look.value;
+<   }  // while not reached end of encoded message
+<   */
+<   // /*                               1144694
+<   for ( register unsigned int pos = 1028; pos < encodedSize; pos++)
+<   {
+<     // look = temp;
+<     register int tempEnd = endBitPos; 
+< 
+<     for(  unsigned int j = 0x80; j > 0; j >>= 1) 
+---
+>     for(int j = 0x80; j > 0; j >>= 1) 
+294c221
+<       if(encodedMessageTemp[pos] & j)
+---
+>       if(encodedMessage[pos] & j)
+297d223
+<         tempEnd--; 
+303d228
+<         tempEnd--; 
+308,317c233
+<         register int tempSize = encodedSize;
+< 
+<         
+<         if (pos >= tempSize - 1 && tempEnd < 0)
+<         {
+<           //cout << "Break"  << endl; 
+<           look = temp;
+<           break; 
+<         }  
+<         // cout << "Test "  << (int) look.value  << "Pos " << pos << endl; 
+---
+>         cout << "Test"  << look.value << endl; 
+320,321d235
+<         
+<         //break; 
+324,326d237
+<    
+<   // decodedMessage[posInMes++] = look.value;
+< 
+328,330c239
+< //  */
+<  //memcpy(decodedMessage, decodedMessageTemp, posInMes);
+<  *decodedSize = posInMes; 
+---
+>  *decodedSize = size; 
