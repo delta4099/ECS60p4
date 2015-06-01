@@ -21,7 +21,7 @@ void BinaryHeap::insert( BinaryNode * x )
 {
         // Percolate up
     int hole = ++currentSize;
-    for( ; hole > 1 && x-> < array[ hole / 2 ]->count; hole /= 2 )
+    for( ; hole > 1 && x->count < array[ hole / 2 ]->count; hole /= 2 )
         array[ hole ] = array[ hole / 2 ];
     array[ hole ] = x;
 }
